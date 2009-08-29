@@ -3,18 +3,21 @@ import x86-32.OpCodes
 
 genCode: func (funcPtr: Func, arg: Int) -> Func {
 	
-    op := new BinarySeq(64)
+    op := new BinarySeq(1024)
  	
+	argHere := arg as UChar
+	
 	op += OpCodes PUSH_EBP
 	op += OpCodes MOV_EBP_ESP
 	op += OpCodes PUSH_BYTE
-	op += arg as UChar
+	op += argHere as UChar
     op += OpCodes MOV_EBX_ADDRESS
 	op += funcPtr as Pointer
 	op += OpCodes CALL_EBX
 	op += OpCodes LEAVE
 	op += OpCodes RET
 
+	printf("Code = ")
 	op print()
 	return op data as Func
 }
@@ -29,7 +32,7 @@ test2: func (a: Int){
 
 main: func {
 	"Generating code.." println()
-    code = genCode(test2, 2) : Func
+    code = genCode(test2, 42) : Func
 	"Calling code.." println()
 	code()
 	"Finished!" println()	

@@ -7,29 +7,29 @@ BinarySeq: class {
 	new: func ~withData (=size, .data) {
 		this(size)
 		index = size
-		memcpy(this data, data, size * sizeof(Octet))
-		//printf("Created new BinarySeq of size %d: ", size)
-		//print()
+		memcpy(this data, data, size * sizeof(UChar))
 	}
 	
 	new: func ~withSize (=size) {
-		//printf("Created new empty BinarySeq of size %d\n", size)
-		data = gc_malloc(size * sizeof(Octet))
+		data = gc_malloc(size * sizeof(UChar))
 	}
 	
-	append: func (other: This) -> This {
-		memcpy(data + index, other data, other size)
-		index += other size
+	append: func ~other (other: This) -> This {
+		append(other data, other size)
+	}
+	
+	append: func ~withLength (ptr: Pointer, ptrLength: SizeT) -> This {
+		memcpy(data + index, ptr, ptrLength)
+		index += ptrLength
 		return this
 	}
 	
 	reset: func index = 0
 	
 	print: func {
-		printf("BinarySeq data (size=%d)\t", size)
 		for(i : Int in 0..index)
 			printf("%.2x ", data[i])
-		println()
+		println()	
 	}
 	
 }
@@ -38,14 +38,6 @@ operator += (b1, b2 : BinarySeq) -> BinarySeq {
 	b1 append(b2)
 }
 
-operator += (b1 : BinarySeq, ptr: Pointer) -> BinarySeq {
-	memcpy(b1 data + b1 index, ptr&, sizeof(Pointer))
-	b1 index += sizeof(Pointer)
-	return b1
-}
-
-operator += (b1 : BinarySeq, uchar: UChar) -> BinarySeq {
-	memcpy(b1 data + b1 index, uchar&, sizeof(UChar))
-	b1 index += sizeof(UChar)
-	return b1
+operator += <T> (b1 : BinarySeq, addon: T) -> BinarySeq {
+	b1 append(addon&, T size)
 }
