@@ -5,12 +5,10 @@ genCode: func (funcPtr: Func, arg: Int) -> Func {
 	
     op := new BinarySeq(1024)
  	
-	argHere := arg as UChar
-	
 	op += OpCodes PUSH_EBP
 	op += OpCodes MOV_EBP_ESP
 	op += OpCodes PUSH_BYTE
-	op += argHere as UChar
+	op += arg as UChar
     op += OpCodes MOV_EBX_ADDRESS
 	op += funcPtr as Pointer
 	op += OpCodes CALL_EBX
