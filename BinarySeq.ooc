@@ -39,8 +39,13 @@ operator += (b1, b2 : BinarySeq) -> BinarySeq {
 }
 
 operator += (b1 : BinarySeq, ptr: Pointer) -> BinarySeq {
-	//printf("Adding address %p\n", ptr)
 	memcpy(b1 data + b1 index, ptr&, sizeof(Pointer))
 	b1 index += sizeof(Pointer)
+	return b1
+}
+
+operator += (b1 : BinarySeq, uchar: UChar) -> BinarySeq {
+	memcpy(b1 data + b1 index, uchar&, sizeof(UChar))
+	b1 index += sizeof(UChar)
 	return b1
 }
