@@ -8,12 +8,12 @@ BinarySeq: class {
 		this(size)
 		index = size
 		memcpy(this data, data, size * sizeof(Octet))
-		printf("Created new BinarySeq of size %d: ", size)
-		print()
+		//printf("Created new BinarySeq of size %d: ", size)
+		//print()
 	}
 	
 	new: func ~withSize (=size) {
-		printf("Created new empty BinarySeq of size %d\n", size)
+		//printf("Created new empty BinarySeq of size %d\n", size)
 		data = gc_malloc(size * sizeof(Octet))
 	}
 	
@@ -39,7 +39,7 @@ operator += (b1, b2 : BinarySeq) -> BinarySeq {
 }
 
 operator += (b1 : BinarySeq, ptr: Pointer) -> BinarySeq {
-	printf("Adding address %p\n", ptr)
+	//printf("Adding address %p\n", ptr)
 	memcpy(b1 data + b1 index, ptr&, sizeof(Pointer))
 	b1 index += sizeof(Pointer)
 	return b1

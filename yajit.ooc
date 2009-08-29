@@ -3,29 +3,23 @@ import x86-32.OpCodes
 
 printf: extern Func
 
-genCode: func (funcPtr: Func) -> Func (String) {
+genCode: func (funcPtr: Func) -> Func {
 	op := new BinarySeq(1000)
 	
 	op += OpCodes PUSH_EBP
-	op print()
 	op += OpCodes MOV_EBP_ESP
-	op print()
-	op += OpCodes PUSH_ADDRESS
-	op print()
+	op += OpCodes MOV_EBX_ADDRESS
 	op += funcPtr as Pointer
-	op print()
 	op += OpCodes CALL_EBX
-	op print()
 	op += OpCodes LEAVE
-	op print()
 	op += OpCodes RET
 
 	op print()
-	return op data
+	return op data as Func
 }
 
 test: func {
-	"Yay =)" println()
+	"-- Yay =) This is the test function --" println()
 }
 
 
