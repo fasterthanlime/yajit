@@ -1,8 +1,6 @@
 import BinarySeq
 import x86-32.OpCodes
 
-printf: extern Func
-
 genCode: func (funcPtr: Func) -> Func {
 	op := new BinarySeq(1000)
 	
