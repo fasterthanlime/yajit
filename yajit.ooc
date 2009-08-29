@@ -12,7 +12,7 @@ genCode: func (funcPtr: Func) -> Func (String) {
 	op print()
 	op += OpCodes PUSH_ADDRESS
 	op print()
-	op += new BinarySeq ~fromAddress (funcPtr)
+	op += funcPtr as Pointer
 	op print()
 	op += OpCodes CALL_EBX
 	op print()
