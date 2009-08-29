@@ -19,7 +19,6 @@ BinarySeq: class {
 	
 	new: func ~fromAddress (ptr: Pointer) {
 		this ~withSize (sizeof(Pointer))
-		ptrChunks = ptr& : UChar*
 		memcpy(data, ptr&, sizeof(Pointer))
 		printf("sizeof(Char) = %d, sizeof(UChar) = %d\n", sizeof(Char), sizeof(UChar))
 		printf("Created new BinarySeq of size %d from address %p and data %p: ", size, ptr, (data as Pointer*)[0])
