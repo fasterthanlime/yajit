@@ -1,10 +1,14 @@
 import BinarySeq
 import x86-32.OpCodes
 
+
+TestStruct :class {}
+
 genCode: func <T> (funcPtr: Func, arg: T) -> Func {
 	
     op := new BinarySeq(1024)
- 	op += OpCodes PUSH_EBP
+ 	//t := new BinarySeq(10, [0x12 as UChar]) <- Amos
+    op += OpCodes PUSH_EBP
 	op += OpCodes MOV_EBP_ESP
     c := T 
     // TODO: Use switch instead
@@ -14,7 +18,6 @@ genCode: func <T> (funcPtr: Func, arg: T) -> Func {
         op += OpCodes PUSH_WORD
     else if (c size == 4) 
         op += OpCodes PUSH_DWORD
-    
     op += arg as UChar
     op += OpCodes MOV_EBX_ADDRESS
 	op += funcPtr as Pointer
@@ -41,9 +44,12 @@ test2: func (a: Int){
 
 main: func {
     
+    a :TestStruct
+    a = new()
+    printf("%x\n", a as Pointer)
     "Generating code.." println()
     code :Func
-    code = genCode(test2, 27) 
+    code = genCode(test2, a as Pointer) 
 	"Calling code.." println()
     code()
 	"Finished!" println()	
