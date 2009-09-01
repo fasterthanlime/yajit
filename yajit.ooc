@@ -1,22 +1,19 @@
 import BinarySeq
 import x86-32.OpCodes
 
-
 TestStruct : class {
 	number: Int
 	name: String
-	new: func (=number, =name)
+	init: func (=number, =name) {}
 }
-
 
 genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int[], argLen: Int) -> Func { 
 	
-    
-    op := new BinarySeq(1024)
-    op += OpCodes PUSH_EBP
+    op := BinarySeq new(1024)
+	op += OpCodes PUSH_EBP
 	op += OpCodes MOV_EBP_ESP
     
-    base := 0x04 + argLen *4  
+    base := 0x04 + argLen * 4  
     //printf("%d\n", base)
     for(i: Int in 0..argLen) {
     
@@ -27,9 +24,9 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int[], argLen: Int) -> F
         
     }
         
-    OpCodes pushClosure (op, closure) // go see the code, it's pretty =)
+    OpCodes pushClosure (op, closure) 
 	op += OpCodes MOV_EBX_ADDRESS
-	op += funcPtr as Pointer // cast because C doesn't like sizeof(void (*)())
+	op += funcPtr as Pointer
 	op += OpCodes CALL_EBX
 	op += OpCodes LEAVE
 	op += OpCodes RET
@@ -37,12 +34,8 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int[], argLen: Int) -> F
 	printf("Code = ")
 	op print()
 	return op data as Func
-
 }
 
-
-
-    
 test: func {
 	"-- Yay =) This is the test function --" println()
 }
@@ -57,16 +50,13 @@ test2: func (ptr: Pointer, arg: Int, secArg: Int, thirdArg: Short){
 }
 
 main: func {
-    
-    
-    a := new TestStruct(42, "mwahhaha")
+    a := TestStruct new(42, "mwahhaha")
     //printf("%x\n", a as Pointer)
     
-    sizes = [4, 4, 4]: Int[] 
+    sizes := [4 as Int, 4, 4] 
     "Generating code.." println()
     code := genCode(test2, a as Pointer, sizes, 3) 
 	"Calling code.." println()
     code(24, 8, 18) // ATM you can just use DWords
 	"Finished!" println()	
-	
 }

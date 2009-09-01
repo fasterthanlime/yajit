@@ -4,13 +4,13 @@ BinarySeq: class {
 	size : SizeT
 	index := 0
 	
-	new: func ~withData (=size, .data) {
+	init: func ~withData (=size, .data) {
 		this(size)
 		index = size
 		memcpy(this data, data, size * sizeof(UChar))
 	}
 	
-	new: func ~withSize (=size) {
+	init: func ~withSize (=size) {
 		data = gc_malloc(size * sizeof(UChar))
 	}
 	
@@ -24,7 +24,7 @@ BinarySeq: class {
 		return this
 	}
 	
-	reset: func index = 0
+	reset: func { index = 0 }
 	
 	print: func {
 		for(i : Int in 0..index)
