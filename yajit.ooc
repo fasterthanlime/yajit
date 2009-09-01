@@ -19,20 +19,15 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int[], argLen: Int) -> F
     base := 0x04 + argLen *4  
     //printf("%d\n", base)
     for(i: Int in 0..argLen) {
-        if (argSizes[i] == 2) {   // TODO
-            op += OpCodes PUSHW_EBP_VAL
-            op += base as UChar
-        } else if(argSizes[i] == 4) {
-            op += OpCodes PUSHDW_EBP_VAL
-            op += base as UChar
-            op print()
-            "" println()
-        }
+    
+        t := argSizes[i]
+        OpCodes pushCallerArg(op, t)
+        op += base as UChar
         base -= 0x04
         
     }
         
-    OpCodes push (op, closure) // go see the code, it's pretty =)
+    OpCodes pushClosure (op, closure) // go see the code, it's pretty =)
 	op += OpCodes MOV_EBX_ADDRESS
 	op += funcPtr as Pointer // cast because C doesn't like sizeof(void (*)())
 	op += OpCodes CALL_EBX
