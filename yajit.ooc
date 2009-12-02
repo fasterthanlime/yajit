@@ -19,14 +19,14 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int*, argLen: Int) -> Po
     
         t := argSizes[i]
         OpCodes pushCallerArg(op, t)
-        op append(base& as UChar*, 1)
+        op append(base& as UChar*, UChar size)
         base -= 0x04
         
     }
         
     OpCodes pushClosure (op, closure) 
     op append(OpCodes MOV_EBX_ADDRESS)
-    op append(funcPtr& as Pointer*, 4)
+    op append(funcPtr& as Pointer*, Pointer size)
     op append(OpCodes CALL_EBX)
     op append(OpCodes LEAVE)
     op append(OpCodes RET)
