@@ -9,9 +9,6 @@ TestStruct : class {
     init: func (=number, =name) {}
 }
 
-errno: extern Int
-strerror: extern func (Int) -> String
-
 genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int*, argLen: Int) -> Pointer { 
     
     op := BinarySeq new(1024)

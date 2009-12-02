@@ -1,4 +1,8 @@
 import os/mmap
+include errno
+
+errno: extern Int
+strerror: extern func (Int) -> String
 
 BinarySeq: class {
     
@@ -14,8 +18,15 @@ BinarySeq: class {
     
     init: func ~withSize (=size) {
         memsize := size * sizeof(UChar)
-        //data = gc_malloc(memsize)
-        data = mmap(null, memsize, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS, -1, 0)
+        // at least 4096, and a multiple of 4096 that is bigger than memsize
+        realsize := memsize + 4096 - (memsize % 4096)
+        data = gc_malloc(realsize)
+        result := mprotect(data, realsize, PROT_READ | PROT_WRITE | PROT_EXEC)
+        if(result != 0) {
+            printf("mprotect(%p, %d) failed with code %d. Message = %s\n", data, realsize, result, strerror(errno))
+        }
+        // mmap is leaking (cause we don't know when to free), and apparently not needed, but just in case, here's the correct call
+        //data = mmap(null, memsize, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS, -1, 0)
     }
     
     append: func ~other (other: This) -> This {
