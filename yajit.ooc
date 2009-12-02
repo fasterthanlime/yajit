@@ -40,12 +40,12 @@ test: func {
     "-- Yay =) This is the test function --" println()
 }
 
-test2: func (ptr: Pointer, arg: Int, secArg: Int, thirdArg: Short){
+test2: func (ptr: Pointer, arg: Int, secArg: Int, thirdArg: Short) -> String {
     printf("Address of param %p, number = %d, name = '%s'\n", ptr, ptr as TestStruct number, ptr as TestStruct name)
     printf("First non-closure arg: %d\n", arg)
     printf("Second arg: %d\n", secArg)
     printf("%d\n", thirdArg)
-    
+    return "Oh my god, even return values work!"
 }
 
 main: func {
@@ -55,8 +55,8 @@ main: func {
     sizes := [4 as Int, 4, 4] 
     "Generating code.." println()
     b := a as Pointer
-    code := genCode(test2, b, sizes, 3) as Func
+    code := genCode(test2, b, sizes, 3) as Func -> String
     "Calling code.." println()
-    code(24, 8, 18) // ATM you can just use DWords
+    code(24, 8, 18) println() // ATM you can just use DWords
     "Finished!" println()    
 }
