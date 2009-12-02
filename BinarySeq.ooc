@@ -1,3 +1,5 @@
+import os/mmap
+
 BinarySeq: class {
     
     data : UChar*
@@ -11,7 +13,9 @@ BinarySeq: class {
     }
     
     init: func ~withSize (=size) {
-        data = gc_malloc(size * sizeof(UChar))
+        memsize := size * sizeof(UChar)
+        //data = gc_malloc(memsize)
+        data = mmap(null, memsize, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_LOCKED | MAP_ANONYMOUS, -1, 0)
     }
     
     append: func ~other (other: This) -> This {

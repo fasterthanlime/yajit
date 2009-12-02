@@ -1,11 +1,16 @@
 import BinarySeq
 import x86-32/OpCodes
+import os/mmap
+include errno
 
 TestStruct : class {
     number: Int
     name: String
     init: func (=number, =name) {}
 }
+
+errno: extern Int
+strerror: extern func (Int) -> String
 
 genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int*, argLen: Int) -> Pointer { 
     
@@ -33,6 +38,7 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int*, argLen: Int) -> Po
 
     printf("Code = ")
     op print()
+    
     return op data as Func
 }
 
