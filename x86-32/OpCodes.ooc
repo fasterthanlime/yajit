@@ -23,17 +23,17 @@ RET					:= static const BinarySeq new(1, [0xc3 as UChar])
 pushClosure: static func <T> (bseq: BinarySeq, arg: T) -> BinarySeq {
 	size := T size
 	if(size == 1) {
-		bseq += PUSH_BYTE
+		bseq append(PUSH_BYTE)
 	} else if(size == 2) {
-		bseq += PUSH_WORD
+		bseq append(PUSH_WORD)
 	} else if(size == 4) {
-		bseq += PUSH_DWORD
+		bseq append(PUSH_DWORD)
 	} else {
 		fprintf(stderr, "Trying to push unknown size: %d\n", T size)
 		x := 0
 		x = 10 / x // dirty way of throwing an exception
 	}
-	bseq += arg
+	bseq append(arg&, size)
 }
 
 pushCallerArg: static func <T> (bseq: BinarySeq, arg: T) -> BinarySeq {

@@ -1,5 +1,5 @@
 import BinarySeq
-import x86-32.OpCodes
+import x86-32/OpCodes
 
 TestStruct : class {
 	number: Int
@@ -7,11 +7,11 @@ TestStruct : class {
 	init: func (=number, =name) {}
 }
 
-genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int[], argLen: Int) -> Func { 
+genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int*, argLen: Int) -> Pointer { 
 	
     op := BinarySeq new(1024)
-	op += OpCodes PUSH_EBP
-	op += OpCodes MOV_EBP_ESP
+    op append(OpCodes PUSH_EBP)
+    op append(OpCodes MOV_EBP_ESP)
     
     base := 0x04 + argLen * 4  
     //printf("%d\n", base)
@@ -19,21 +19,21 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int[], argLen: Int) -> F
     
         t := argSizes[i]
         OpCodes pushCallerArg(op, t)
-        op += base as UChar
+        op append(base& as UChar*, 1)
         base -= 0x04
         
     }
         
     OpCodes pushClosure (op, closure) 
-	op += OpCodes MOV_EBX_ADDRESS
-	op += funcPtr as Pointer
-	op += OpCodes CALL_EBX
-	op += OpCodes LEAVE
-	op += OpCodes RET
+    op append(OpCodes MOV_EBX_ADDRESS)
+    op append(funcPtr& as Pointer*, 4)
+    op append(OpCodes CALL_EBX)
+    op append(OpCodes LEAVE)
+    op append(OpCodes RET)
 
-	printf("Code = ")
-	op print()
-	return op data as Func
+    printf("Code = ")
+    op print()
+    return op data as Func
 }
 
 test: func {
@@ -55,7 +55,8 @@ main: func {
     
     sizes := [4 as Int, 4, 4] 
     "Generating code.." println()
-    code := genCode(test2, a as Pointer, sizes, 3) 
+    b := a as Pointer
+    code := genCode(test2, b, sizes, 3) as Func
 	"Calling code.." println()
     code(24, 8, 18) // ATM you can just use DWords
 	"Finished!" println()	
