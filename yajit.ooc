@@ -9,23 +9,19 @@ TestStruct : class {
     init: func (=number, =name) {}
 }
 
-genCode: func <T> (funcPtr: Func, closure: T, argSizes: Int*, argLen: Int) -> Pointer { 
+
+genCode: func <T> (funcPtr: Func, closure: T, argSizes: String) -> Pointer { 
     
     op := BinarySeq new(1024)
     op append(OpCodes PUSH_EBP)
     op append(OpCodes MOV_EBP_ESP)
-    
-    base := 0x04 + argLen * 4  
-    //printf("%d\n", base)
-    for(i: Int in 0..argLen) {
-    
-        t := argSizes[i]
-        OpCodes pushCallerArg(op, t)
+    base := 0x04 + argSizes length() * 4  
+    printf("%d\n", base)
+    for (c: String in argSizes) {
+        OpCodes pushCallerArg(op, op transTable get(c))
         op append(base& as UChar*, UChar size)
         base -= 0x04
-        
     }
-        
     OpCodes pushClosure (op, closure) 
     op append(OpCodes MOV_EBX_ADDRESS)
     op append(funcPtr& as Pointer*, Pointer size)
@@ -51,15 +47,17 @@ test2: func (ptr: Pointer, arg: Int, secArg: Int, thirdArg: Short) -> String {
     return "Oh my god, even return values work!"
 }
 
+test3: func(i: Int) -> Int {
+    i+i
+}
+
 main: func {
     a := TestStruct new(42, "mwahhaha")
-    //printf("%x\n", a as Pointer)
-    
-    sizes := [4 as Int, 4, 4] 
     "Generating code.." println()
-    b := a as Pointer
-    code := genCode(test2, b, sizes, 3) as Func -> String
+    code := genCode(test2, a, "iii") as Func -> String
     "Calling code.." println()
     code(24, 8, 18) println() // ATM you can just use DWords
+    code2 := genCode(test3, 4, "") as Func -> Int
+    printf("%d\n", code2()) 
     "Finished!" println()    
 }

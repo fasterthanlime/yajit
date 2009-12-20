@@ -1,4 +1,5 @@
 import os/mmap
+import structs/HashMap
 include errno
 
 errno: extern Int
@@ -9,9 +10,16 @@ BinarySeq: class {
     data : UChar*
     size : SizeT
     index := 0
+    transTable := HashMap<Int> new()
     
     init: func ~withData (=size, .data) {
         this(size)
+        transTable["c"] = Char size
+        transTable["h"] = Short size
+        transTable["i"] = Int size
+        transTable["l"] = Long size
+        transTable["P"] = Pointer size
+
         index = size
         memcpy(this data, data, size * sizeof(UChar))
     }
