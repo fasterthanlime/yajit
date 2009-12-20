@@ -21,28 +21,27 @@ LEAVE                := static const BinarySeq new(1, [0xc9 as UChar])
 RET                    := static const BinarySeq new(1, [0xc3 as UChar])
 
 pushClosure: static func <T> (bseq: BinarySeq, arg: T) -> BinarySeq {
-    size := T size
-    if(size == 1) {
-        bseq append(PUSH_BYTE)
-    } else if(size == 2) {
-        bseq append(PUSH_WORD)
-    } else if(size == 4) {
-        bseq append(PUSH_DWORD)
-    } else {
-        fprintf(stderr, "Trying to push unknown size: %d\n", T size)
-        x := 0
-        x = 10 / x // dirty way of throwing an exception
+    match T size {
+        case 1 => bseq append(PUSH_BYTE)
+        case 2 => bseq append(PUSH_WORD)
+        case 4 => bseq append(PUSH_DWORD)
+        case => {fprintf(stderr, "Trying to push unknown size: %d\n", T size)
+                 x := 0
+                 x = 10 / x // dirty way of throwing an exception
+                }
     }
-    bseq append(arg&, size)
+    bseq append(arg&, T size)
 }
 
 pushCallerArg: static func <T> (bseq: BinarySeq, arg: T) -> BinarySeq {
-    size := T size
-    if (size == 1 || size == 2) {
-        bseq += OpCodes PUSHW_EBP_VAL
-    } else if (size == 4) {
-        bseq += OpCodes PUSHDW_EBP_VAL
-    }
+    match T size {
+        case 1 || 2 => bseq += OpCodes PUSHW_EBP_VAL
+        case 4 => bseq += OpCodes PUSHDW_EBP_VAL
+        case =>{fprintf(stderr, "Trying to push unknown size: %d\n", T size)
+                 x := 0
+                 x = 10 / x // dirty way of throwing an exception
+                }
+    } 
     return bseq
 
 }

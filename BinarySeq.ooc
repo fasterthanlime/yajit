@@ -15,6 +15,8 @@ BinarySeq: class {
     init: func ~withData (=size, .data) {
         this(size)
         transTable["c"] = Char size
+        transTable["d"] = Double size
+        transTable["f"] = Float size
         transTable["h"] = Short size
         transTable["i"] = Int size
         transTable["l"] = Long size

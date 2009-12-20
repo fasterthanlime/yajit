@@ -15,7 +15,7 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: String) -> Pointer {
     op := BinarySeq new(1024)
     op append(OpCodes PUSH_EBP)
     op append(OpCodes MOV_EBP_ESP)
-    base := 0x04 + argSizes length() * 4  
+    base := 0x04 + argSizes length() * 4 
     printf("%d\n", base)
     for (c: String in argSizes) {
         OpCodes pushCallerArg(op, op transTable get(c))
@@ -57,7 +57,7 @@ main: func {
     code := genCode(test2, a, "iii") as Func -> String
     "Calling code.." println()
     code(24, 8, 18) println() // ATM you can just use DWords
-    code2 := genCode(test3, 4, "") as Func -> Int
-    printf("%d\n", code2()) 
+    code2 := genCode(test3, 4, "i") as Func -> Int
+    printf("%d\n", code2(2)) 
     "Finished!" println()    
 }
