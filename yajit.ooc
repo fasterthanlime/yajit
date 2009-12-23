@@ -16,19 +16,20 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: String) -> Pointer {
     op := BinarySeq new(1024)
     op append(OpCodes PUSH_EBP)
     op append(OpCodes MOV_EBP_ESP)
-    base := 0x04 
-    //+ argSizes length() *4
-    for (c: String in argSizes) {
-        base += op transTable get(c) as Int
-        printf("%d\n", op transTable[c])
+    base := 0x04// + argSizes length() * 4
+    
+    for (c: Char in argSizes) {
+        s := String new(c)
+        base += op transTable get(s) 
+        //printf("\n%d\n", op transTable get(s))
     }
-    // + argSizes length() * 4 
+    //printf("\n%d\n", base)
     for (c: String in argSizes) {
-        OpCodes pushCallerArg(op, op transTable[c])
+        s := String new(c)
+        OpCodes pushCallerArg(op, op transTable[s])
         op append(base& as UChar*, UChar size)
         base -= 0x04
     }
-    printf("%d\n\n", base)
     OpCodes pushClosure (op, closure) 
     op append(OpCodes MOV_EBX_ADDRESS)
     op append(funcPtr& as Pointer*, Pointer size)

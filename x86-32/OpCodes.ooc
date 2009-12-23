@@ -34,7 +34,6 @@ pushClosure: static func <T> (bseq: BinarySeq, arg: T) -> BinarySeq {
 }
 
 pushCallerArg: static func <T> (bseq: BinarySeq, arg: T) -> BinarySeq {
-    printf("\n%d\n\n", T size)
     match T size {
         case 1 || 2 => bseq += OpCodes PUSHW_EBP_VAL
         case 4 => bseq += OpCodes PUSHDW_EBP_VAL
