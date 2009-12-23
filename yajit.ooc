@@ -1,6 +1,7 @@
 import BinarySeq
 import x86-32/OpCodes
 import os/mmap
+import structs/HashMap
 include errno
 
 TestStruct : class {
@@ -15,13 +16,19 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: String) -> Pointer {
     op := BinarySeq new(1024)
     op append(OpCodes PUSH_EBP)
     op append(OpCodes MOV_EBP_ESP)
-    base := 0x04 + argSizes length() * 4 
-    printf("%d\n", base)
+    base := 0x04 
+    //+ argSizes length() *4
     for (c: String in argSizes) {
-        OpCodes pushCallerArg(op, op transTable get(c))
+        base += op transTable get(c) as Int
+        printf("%d\n", op transTable[c])
+    }
+    // + argSizes length() * 4 
+    for (c: String in argSizes) {
+        OpCodes pushCallerArg(op, op transTable[c])
         op append(base& as UChar*, UChar size)
         base -= 0x04
     }
+    printf("%d\n\n", base)
     OpCodes pushClosure (op, closure) 
     op append(OpCodes MOV_EBX_ADDRESS)
     op append(funcPtr& as Pointer*, Pointer size)
