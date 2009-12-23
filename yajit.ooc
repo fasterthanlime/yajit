@@ -18,13 +18,15 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: String) -> Pointer {
     op append(OpCodes MOV_EBP_ESP)
     base := 0x04 
     //+ argSizes length() *4
-    for (c: String in argSizes) {
-        base += op transTable get(c) as Int
-        printf("%d\n", op transTable[c])
+    for (c: Char in argSizes) {
+        s := String new(c)
+        base += op transTable get(s) as Int
+        printf("%d\n", op transTable[s])
     }
     // + argSizes length() * 4 
-    for (c: String in argSizes) {
-        OpCodes pushCallerArg(op, op transTable[c])
+    for (c: Char in argSizes) {
+        s := String new(c)
+        OpCodes pushCallerArg(op, op transTable[s])
         op append(base& as UChar*, UChar size)
         base -= 0x04
     }
