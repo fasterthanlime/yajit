@@ -16,7 +16,6 @@ BinarySeq: class {
         this(size)
         index = size
         memcpy(this data, data, size * sizeof(UChar))
-        initTransTable()
     }
     
     init: func ~withSize (=size) {
