@@ -24,7 +24,7 @@ genCode: func <T> (funcPtr: Func, closure: T, argSizes: String) -> Pointer {
         //printf("\n%d\n", op transTable get(s))
     }
     //printf("\n%d\n", base)
-    for (c: String in argSizes) {
+    for (c: Char in argSizes) {
         s := String new(c)
         OpCodes pushCallerArg(op, op transTable[s])
         op append(base& as UChar*, UChar size)
