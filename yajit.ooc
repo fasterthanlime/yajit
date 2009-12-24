@@ -16,6 +16,20 @@ TestStruct : class {
     init: func (=number, =name) {}
 }
 
+reverse: func <T> (list: ArrayList<T>) {
+    "i'm reversed" println()
+    i := 0
+    j := list size() -1
+    tmp: T
+    while (i <= j / 2) {
+        tmp = list[i]
+        list[i] = list[j]
+        list[j] = tmp
+        i += 1
+        j -= 1
+    }
+}
+
 pushNonClosureArgs: func(op: BinarySeq, argSizes: String, base: Int)  {
     for (c: Char in argSizes) {
         s := String new(c)
@@ -27,7 +41,6 @@ pushNonClosureArgs: func(op: BinarySeq, argSizes: String, base: Int)  {
     "pushNonClosureArgs: " println()
     op print()
     "" println()
-    
 }
 
 initSequence: func(s: Int) -> BinarySeq {
@@ -73,9 +86,10 @@ genCode: func  ~argList(funcPtr: Pointer, closure: ArrayList<Cell<Pointer>>, arg
     }
     */
     printf("StartBase: %d\n", base)
+    closureArgs := closure clone() // cloning fixes problem with reverse (don't ask why^^)
+    reverse(closureArgs)
     pushNonClosureArgs(op, argSizes, base)
-    //printf("\n%d\n\n", base)
-    for (item: Cell<Pointer> in closure) {
+    for (item: Cell<Pointer> in closureArgs) {
         T := item T
         OpCodes pushClosure (op, item val as T)
     } 
@@ -115,7 +129,7 @@ test5: func(i, j: Int, tStruct: TestStruct, k: Int) -> Int {
     printf("i:%d\n", i)
     printf("j:%d\n", j)
     printf("k:%d\n", k)
-    printf("Address of param %p, number = %d, name = '%s'\n", i, i as TestStruct number, i as TestStruct name)
+    printf("Address of param %p, number = %d, name = '%s'\n", tStruct, tStruct as TestStruct number, tStruct as TestStruct name)
     i+j+k
 }
 
@@ -123,7 +137,7 @@ main: func {
     a := TestStruct new(42, "mwahhaha")
     "Generating code.." println()
     clArg1 := Cell<Int> new(21)
-    clArg2 := Cell<Int> new(42)
+    clArg2 := Cell<Int> new(44)
     clArg3 := Cell<Pointer> new(a)
     closureArgs := ArrayList<Cell<Pointer>> new()
     closureArgs add(clArg1).add(clArg2).add(clArg3)
