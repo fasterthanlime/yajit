@@ -1,7 +1,13 @@
 use yajit
 import structs/ArrayList
+import yajit/x86-32/OpCodes
 import yajit/Partial
 
+TestStruct: class {
+    number: Int
+    name: String
+    init: func(=number, =name) {}
+}
 
 test: func {
     "-- Yay =) This is the test function --" println()
@@ -44,20 +50,17 @@ main: func {
     clArg3 := Cell<Pointer> new(a)
     closureArgs := ArrayList<Cell<Pointer>> new()
     closureArgs add(clArg1).add(clArg2).add(clArg3)
-    partial := Partial new(test2)
-    partial setNonPartialArgs("iii")
-    function1 := partial genCode(a) as Func -> String    
+    partial := OpCodes new()
+    function1 := partial genCode(test2, a, "iii") as Func -> String    
     function1(2, 3, 4) println()
-    partial = Partial new(test3)
-    partial setNonPartialArgs("ii")
-    function2 := partial genCode(4) as Func -> Int
+    partial = OpCodes new()
+    function2 := partial genCode(test3, 4, "ii") as Func -> Int
     printf("%d\n", function2(2, 2))
-    partial = Partial new(test4)
-    function3 := partial genCode(closureArgs) as Func -> Int
+    partial = OpCodes new()
+    function3 := partial genCode(test4, closureArgs, "") as Func -> Int
     function3()
-    partial = Partial new(test5)
-    partial setNonPartialArgs("i")
-    function4 := partial genCode(closureArgs) as Func -> Int
+    partial = OpCodes new()
+    function4 := partial genCode(test5, closureArgs, "i") as Func -> Int
     function4 (partial converseFloat(23.3))
     "Finished!" println()
 }
