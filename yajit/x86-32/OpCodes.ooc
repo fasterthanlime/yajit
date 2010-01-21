@@ -68,7 +68,7 @@ OpCodes: class extends Partial {
         printf("\n%daaa\n\n", closure size())
         bseq := initSequence(1024)
         closureArgs := closure clone() // cloning fixes problem with reverse (don't ask why^^)
-        reverse(closureArgs)
+        closureArgs reverse()
         pushNonClosureArgs(getBase(argSizes, bseq),argSizes)
         for (item: Cell<Pointer> in closureArgs) {
             T := item T
