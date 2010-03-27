@@ -10,7 +10,7 @@ BinarySeq: class {
     data : UChar*
     size : SizeT
     index := 0
-    transTable := HashMap<Int> new()
+    transTable := HashMap<String, Int> new()
     
     init: func ~withData (=size, .data) {
         this(size)
