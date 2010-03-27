@@ -1,7 +1,7 @@
 use yajit
 import structs/ArrayList
-import yajit/x86-32/OpCodes
-import yajit/Partial
+import yajit/x86-32/Partial
+
 
 TestStruct: class {
     number: Int
@@ -50,18 +50,20 @@ main: func {
     clArg3 := Cell<Pointer> new(a)
     closureArgs := ArrayList<Cell<Pointer>> new()
     closureArgs add(clArg1).add(clArg2).add(clArg3)
-    partial := OpCodes new()
+    partial := Partial new()
     function1 := partial genCode(test2, a, "iii") as Func -> String    
     function1(2, 3, 4) println()
-    partial = OpCodes new()
+    partial = Partial new()
     function2 := partial genCode(test3, 4, "ii") as Func -> Int
     printf("%d\n", function2(2, 2))
-    partial = OpCodes new()
+    partial = Partial new()
     function3 := partial genCode(test4, closureArgs, "") as Func -> Int
     function3()
-    partial = OpCodes new()
+    /*
+    partial = Partial new()
     function4 := partial genCode(test5, closureArgs, "i") as Func -> Int
     function4 (partial converseFloat(23.3))
+    */
     "Finished!" println()
 }
 
