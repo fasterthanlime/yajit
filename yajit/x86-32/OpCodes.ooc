@@ -1,4 +1,4 @@
-import ../BinarySeq
+import BinarySeq
 
 OpCodes: class  {
     

@@ -1,6 +1,5 @@
-use yajit
 import structs/ArrayList
-import yajit/x86-32/Partial
+import ../yajit/x86-32/Partial
 
 
 TestStruct: class {
@@ -53,17 +52,22 @@ main: func {
     partial := Partial new()
     function1 := partial genCode(test2, a, "iii") as Func -> String    
     function1(2, 3, 4) println()
-    partial = Partial new()
+    "yaaay" println()
+    partial = Partial new() 
     function2 := partial genCode(test3, 4, "ii") as Func -> Int
     printf("%d\n", function2(2, 2))
     partial = Partial new()
-    function3 := partial genCode(test4, closureArgs, "") as Func -> Int
+    partial addArgument(21)
+    partial addArgument(42)
+    partial addArgument(a)
+    function3 := partial genCode(test4, "") as Func -> Int
     function3()
-    /*
     partial = Partial new()
-    function4 := partial genCode(test5, closureArgs, "i") as Func -> Int
+    partial addArgument(21)
+    partial addArgument(42)
+    partial addArgument(a)
+    function4 := partial genCode(test5, "i") as Func -> Int
     function4 (partial converseFloat(23.3))
-    */
     "Finished!" println()
 }
 

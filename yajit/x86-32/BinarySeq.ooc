@@ -13,7 +13,7 @@ BinarySeq: class {
     transTable := HashMap<String, Int> new()
     
     init: func ~withData (=size, .data) {
-        this(size)
+        init(size)
         index = size
         memcpy(this data, data, size * sizeof(UChar))
     }

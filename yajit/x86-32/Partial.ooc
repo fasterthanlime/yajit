@@ -1,11 +1,12 @@
 import structs/ArrayList
-import ../BinarySeq
+import BinarySeq
 import OpCodes
 
 Partial: class {     
     
     bseq: BinarySeq
 
+    arguments := ArrayList<Cell<Pointer>> new()
     init: func {initSequence(1024)}
     init: func ~withSize(s: Int) {initSequence(s)}
     
@@ -33,31 +34,36 @@ Partial: class {
         } 
     }
     
+    addArgument: func<T>(param: T) {
+        arg := Cell<T> new(param)
+        this arguments add(arg)
+    }
+    
     genCode: func <T>(function: Pointer, closure: T, argSizes: String) -> Pointer {
         pushNonClosureArgs(getBase(argSizes, bseq), argSizes)
         pushClosure(closure)
         finishSequence(function)
-        bseq print()
+        //bseq print()
         return bseq data as Func
     }
     
-    genCode: func ~multipleArgs(function: Pointer, closure: ArrayList<Cell<Pointer>>, argSizes: String) -> Pointer { 
+    genCode: func ~multipleArgs(function: Pointer, argSizes: String) -> Pointer { 
         // IMPORTANT!! bug concerning choice of right polymorphic func
         // even if a non-closure arg is smaller than 4 byte
         // treating it as it'd have 4 bytes works
         // should be fixed later on, but it's currently
         // more important to have somehing working :) 
-        bseq := initSequence(1024)
-        //closureArgs := closure clone() // cloning fixes problem with reverse (don't ask why^^)
-        //closureArgs reverse()
+        arguments reverse()
         pushNonClosureArgs(getBase(argSizes, bseq),argSizes)
-        for (item: Cell<Pointer> in closure) {
+        for (item: Cell<Pointer> in arguments) {
             T := item T
             pushClosure(item val as Pointer)
         } 
         finishSequence(function)
+        /*
         printf("Code = ")
         bseq print()
+        */
         return bseq data as Func
     }
     
@@ -65,9 +71,11 @@ Partial: class {
         bseq = BinarySeq new(s)
         bseq append(OpCodes PUSH_EBP)
         bseq append(OpCodes MOV_EBP_ESP)
+        /*
         "Init sequence: " print()
         bseq print()
         "" println()
+        */
         return bseq
     }
     
@@ -76,12 +84,14 @@ Partial: class {
             s := String new(c)
             pushCallerArg(bseq transTable get(s))
             bseq append(base& as UChar*, UChar size)
-            base = base - bseq transTable get(s) //op transTable get(s)
+            base = base - bseq transTable get(s)
         }
+        /*
         printf("EndBase: %d\n", base)
         "pushNonClosureArgs: " println()
         bseq print()
         "" println()
+        */
     }
 
     finishSequence: func(funcPtr: Pointer) {
@@ -100,6 +110,5 @@ Partial: class {
         }
         return base
     }
-
 }
 
