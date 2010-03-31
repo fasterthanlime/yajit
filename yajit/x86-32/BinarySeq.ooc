@@ -1,5 +1,5 @@
 import os/mmap
-import structs/HashMap
+import structs/[ArrayList,HashMap]
 include errno
 
 errno: extern Int
@@ -12,10 +12,10 @@ BinarySeq: class {
     index := 0
     transTable := HashMap<String, Int> new()
     
-    init: func ~withData (=size, .data) {
+    init: func ~withData (=size, d: UChar[]) {
         init(size)
         index = size
-        memcpy(this data, data, size * sizeof(UChar))
+        memcpy(data, d data, size * sizeof(UChar))
     }
     
     init: func ~withSize (=size) {
@@ -46,7 +46,7 @@ BinarySeq: class {
         append(other data, other size)
     }
     
-    append: func ~withLength (ptr: Pointer, ptrLength: SizeT) -> This {
+    append: func ~withLength (ptr: UInt8*, ptrLength: SizeT) -> This {
         memcpy(data + index, ptr, ptrLength)
         index += ptrLength
         return this
