@@ -1,5 +1,5 @@
 import structs/ArrayList
-import ../yajit/x86-32/Partial
+import ../yajit/x86_32/Partial
 
 
 TestStruct: class {
