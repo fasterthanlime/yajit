@@ -93,7 +93,7 @@ Partial: class {
         for (c: Char in argSizes) {
             s := String new(c)
             pushCallerArg(bseq transTable get(s))
-            bseq append((base&) as UChar*, UChar size)
+            bseq append((base&) as UChar*, 1)
             base = base - bseq transTable get(s)
         }
         /*

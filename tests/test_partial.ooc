@@ -46,7 +46,6 @@ main: func {
     partial := Partial new()
     function1 := partial genCode(test2, a, "iii") as Func -> String    
     function1(2, 3, 4) println()
-    /*
     "yaaay" println()
     partial = Partial new() 
     function2 := partial genCode(test3, 4, "ii") as Func -> Int
@@ -64,6 +63,5 @@ main: func {
     function4 := partial genCode(test5, "i") as Func -> Int
     function4 (partial converseFloat(23.3))
     "Finished!" println()
-    */
 }
 
