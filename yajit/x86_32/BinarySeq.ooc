@@ -12,10 +12,10 @@ BinarySeq: class {
     index := 0
     transTable := HashMap<String, Int> new()
     
-    init: func ~withData (=size, d: UChar[]) {
+    init: func ~withData (=size, d: UChar*) {
         init(size)
         index = size
-        memcpy(data, d data, size * sizeof(UChar))
+        memcpy(data, d, size * sizeof(UChar))
     }
     
     init: func ~withSize (=size) {
@@ -42,11 +42,11 @@ BinarySeq: class {
         transTable["P"] = Pointer size
     }
 
-    append: func ~other (other: This) -> This {
+    append: func ~other (other: BinarySeq) -> BinarySeq {
         append(other data, other size)
     }
     
-    append: func ~withLength (ptr: UInt8*, ptrLength: SizeT) -> This {
+    append: func ~withLength (ptr: Pointer, ptrLength: SizeT) -> BinarySeq {
         memcpy(data + index, ptr, ptrLength)
         index += ptrLength
         return this

@@ -11,9 +11,9 @@ Partial: class {
     init: func ~withSize(s: Int) {initSequence(s)}
     
     pushClosure: func <T> (arg: T) {
-        if (T size == 1) { bseq += OpCodes PUSH_BYTE }
-        elseif (T size == 2) { bseq += OpCodes PUSH_WORD }
-        elseif (T size == 4) { bseq += OpCodes PUSH_DWORD }
+        if (T size == 1) { bseq append(OpCodes PUSH_BYTE) }
+        elseif (T size == 2) { bseq append(OpCodes PUSH_WORD) }
+        elseif (T size == 4) { bseq append(OpCodes PUSH_DWORD) }
         else { 
             fprintf(stderr, "Trying to push unknown size: %d\n", T size)
             x := 0
@@ -30,8 +30,8 @@ Partial: class {
     }
 
     pushCallerArg: func <T> (arg: T) {
-        if (T size == 1 || T size == 2) { bseq += OpCodes PUSHW_EBP_VAL }
-        elseif (T size == 4) { bseq += OpCodes PUSHDW_EBP_VAL }
+        if (T size == 1 || T size == 2) { bseq append(OpCodes PUSHW_EBP_VAL) }
+        elseif (T size == 4) { bseq append(OpCodes PUSHDW_EBP_VAL) }
         else {
             fprintf(stderr, "Trying to push unknown size: %d\n", T size)
             x := 0
@@ -54,22 +54,22 @@ Partial: class {
         arguments add(arg)
     }
     
-    genCode: func <T>(function: Pointer, closure: T, argSizes: String) -> Func {
+    genCode: func <T>(function: Func, closure: T, argSizes: String) -> Func {
         pushNonClosureArgs(getBase(argSizes, bseq), argSizes)
         pushClosure(closure)
         finishSequence(function)
-        //bseq print()
+        bseq print()
         return bseq data as Func
     }
     
-    genCode: func ~multipleArgs(function: Pointer, argSizes: String) -> Pointer { 
+    genCode: func ~multipleArgs(function: Func, argSizes: String) -> Func { 
         // IMPORTANT!! bug concerning choice of right polymorphic func
         // even if a non-closure arg is smaller than 4 byte
         // treating it as it'd have 4 bytes works
         // should be fixed later on, but it's currently
         // more important to have somehing working :) 
         arguments reverse()
-        pushNonClosureArgs(getBase(argSizes, bseq),argSizes)
+        pushNonClosureArgs(getBase(argSizes, bseq), argSizes)
         for (item: Cell<Pointer> in arguments) {
             T := item T
             pushClosure(item val as Pointer)
@@ -84,21 +84,16 @@ Partial: class {
     
     initSequence: func(s: Int) -> BinarySeq {
         bseq = BinarySeq new(s)
-        bseq += OpCodes PUSH_EBP
-        bseq += OpCodes MOV_EBP_ESP
-        /*
-        "Init sequence: " print()
-        bseq print()
-        "" println()
-        */
+        bseq append(OpCodes PUSH_EBP)
+        bseq append(OpCodes MOV_EBP_ESP)
         return bseq
     }
     
-    pushNonClosureArgs: func(base: Int, argSizes: String)  {
+    pushNonClosureArgs: func(base: UChar, argSizes: String)  {
         for (c: Char in argSizes) {
             s := String new(c)
             pushCallerArg(bseq transTable get(s))
-            bseq append((base&) as UInt8*, UChar size)
+            bseq append((base&) as UChar*, UChar size)
             base = base - bseq transTable get(s)
         }
         /*
@@ -109,16 +104,16 @@ Partial: class {
         */
     }
 
-    finishSequence: func(funcPtr: Pointer) {
-        bseq += OpCodes MOV_EBX_ADDRESS
-        bseq append((funcPtr&) as Pointer*, Pointer size)
-        bseq += OpCodes CALL_EBX
-        bseq += OpCodes LEAVE
-        bseq += OpCodes RET
+    finishSequence: func(funcPtr: Func) {
+        bseq append(OpCodes MOV_EBX_ADDRESS)
+        bseq append((funcPtr&) as UInt8*, Pointer size)
+        bseq append(OpCodes CALL_EBX)
+        bseq append(OpCodes LEAVE)
+        bseq append(OpCodes RET)
     }
 
     converseFloat: static func(f: Float) -> Int {((f&) as Int32*)@}
-    getBase: func(argSizes: String, bseq: BinarySeq) -> Int{
+    getBase: func(argSizes: String, bseq: BinarySeq) -> UChar{
         base := 0x04
         for (c: Char in argSizes) {
             base = base + bseq transTable get(String new(c))

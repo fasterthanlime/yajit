@@ -43,15 +43,10 @@ test5: func(i, j: Int, tStruct: TestStruct, k: Float) -> Int {
 main: func {
     a := TestStruct new(42, "mwahhaha")
     "Generating code.." println()
-    clArg1 := Cell<Int> new(21)
-    clArg2 := Cell<Int> new(44)
-    clArg3 := Cell<Pointer> new(a)
-    closureArgs := ArrayList<Cell<Pointer>> new()
-    closureArgs add(clArg1).add(clArg2).add(clArg3)
     partial := Partial new()
     function1 := partial genCode(test2, a, "iii") as Func -> String    
-    /*
     function1(2, 3, 4) println()
+    /*
     "yaaay" println()
     partial = Partial new() 
     function2 := partial genCode(test3, 4, "ii") as Func -> Int
@@ -68,7 +63,7 @@ main: func {
     partial addArgument(a)
     function4 := partial genCode(test5, "i") as Func -> Int
     function4 (partial converseFloat(23.3))
-    */
     "Finished!" println()
+    */
 }
 
